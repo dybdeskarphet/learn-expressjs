@@ -7,20 +7,28 @@ connectDB();
 
 // Books in JSON
 router.get("/", async (req, res) => {
+  const pageOptions = {
+    page: parseInt(req.query.page, 10) || 1,
+    limit: parseInt(req.query.limit, 10) || 1,
+  };
+
   try {
-    const users = await Book.find();
-    res.json(users);
+    const books = await Book.find()
+      .skip(pageOptions.limit * (pageOptions.page - 1))
+      .limit(pageOptions.limit);
+
+    res.json(books);
   } catch (error) {
-    res.status(500).json({ message: "Error getting the user list", error });
+    res.status(500).json({ message: "Error getting the book list", error });
   }
 });
 
 // Get book by ID
 router.get("/:id", async (req, res) => {
   try {
-    const user = await Book.findById(req.params.id);
-    return user
-      ? res.json(user)
+    const book = await Book.findById(req.params.id);
+    return book
+      ? res.json(book)
       : res.status(404).json({ message: "Book not found" });
   } catch (error) {
     res.status(500).json({ message: "Error getting the book by ID", error });
@@ -43,6 +51,7 @@ router.post("/", async (req, res) => {
   }
 });
 
+// TODO: Update the only given fields instead of needing to update all fields
 router.put("/:id", async (req, res) => {
   try {
     const { title, author } = req.body;
