@@ -1,10 +1,7 @@
-const express = require("express");
+const express = require("express"),
+  bookRoutes = require("./routes/books.js");
+
 const app = express();
-const connectDB = require("./db.js");
-const bookRoutes = require("./routes/books.js");
-
-connectDB();
-
 
 // Middleware
 app.use(express.json());
