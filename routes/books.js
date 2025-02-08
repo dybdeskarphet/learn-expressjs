@@ -64,8 +64,6 @@ router.put("/:id", async (req, res) => {
   }
 });
 
-// TODO: You're probably here, you're trying to implement MongoDB to the API
-
 router.delete("/:id", async (req, res) => {
   try {
     const deletedBook = await Book.findByIdAndDelete(req.params.id);
