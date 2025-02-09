@@ -1,9 +1,10 @@
-const express = require("express"),
-  bookRoutes = require("./routes/books.js");
+import express, { Express, Request, Response } from "express";
+import { bookRoutes } from "./routes/books";
+import dotenv from "dotenv";
 
-require("dotenv").config();
+dotenv.config();
 
-const app = express();
+const app: Express = express();
 
 // Middleware
 app.use(express.json());
@@ -13,7 +14,7 @@ app.use("/books", bookRoutes);
 
 // root
 
-app.get("/", (req, res) => {
+app.get("/", (req: Request, res: Response) => {
   res.send("This is a Library API");
 });
 

@@ -1,6 +1,12 @@
-const mg = require("mongoose");
+import mg from "mongoose";
 
-const bookSchema = new mg.Schema({
+interface IBook {
+  title: string;
+  author: string;
+  addedAt: Date;
+}
+
+const bookSchema = new mg.Schema<IBook>({
   title: { type: String, required: true },
   author: { type: String, required: true },
   addedAt: { type: Date, default: Date.now },
@@ -8,4 +14,4 @@ const bookSchema = new mg.Schema({
 
 const Book = mg.model("Book", bookSchema);
 
-module.exports = Book;
+export { Book, IBook };

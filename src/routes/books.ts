@@ -1,15 +1,15 @@
-const express = require("express");
-const router = express.Router();
-const Book = require("../models/Book");
-const connectDB = require("../db");
+import express, { Request, Response } from "express";
+import { IBook, Book } from "../models/Book";
+import { connectDB } from "../db";
 
+const router = express.Router();
 connectDB();
 
 // Books in JSON
-router.get("/", async (req, res) => {
+router.get("/", async (req: Request, res: Response) => {
   const pageOptions = {
-    page: parseInt(req.query.page, 10) || 1,
-    limit: parseInt(req.query.limit, 10) || 1,
+    page: parseInt(req.query.page as string, 10) || 1,
+    limit: parseInt(req.query.limit as string, 10) || 1,
   };
 
   try {
@@ -24,18 +24,18 @@ router.get("/", async (req, res) => {
 });
 
 // Get book by ID
-router.get("/:id", async (req, res) => {
+router.get("/:id", async (req: Request, res: Response): Promise<void> => {
   try {
     const book = await Book.findById(req.params.id);
-    return book
-      ? res.json(book)
-      : res.status(404).json({ message: "Book not found" });
+    book ? res.json(book) : res.status(404).json({ message: "Book not found" });
+    return;
   } catch (error) {
     res.status(500).json({ message: "Error getting the book by ID", error });
+    return;
   }
 });
 
-router.post("/", async (req, res) => {
+router.post("/", async (req: Request, res: Response): Promise<void> => {
   try {
     const { title, author } = req.body;
 
@@ -46,13 +46,15 @@ router.post("/", async (req, res) => {
     const newBook = new Book({ title, author });
     await newBook.save();
     res.status(201).json(newBook);
+    return;
   } catch (error) {
     res.status(500).json({ message: "Error adding book to the DB", error });
+    return;
   }
 });
 
 // TODO: Update the only given fields instead of needing to update all fields
-router.put("/:id", async (req, res) => {
+router.put("/:id", async (req: Request, res: Response): Promise<void> => {
   try {
     const { title, author } = req.body;
 
@@ -65,24 +67,28 @@ router.put("/:id", async (req, res) => {
       { new: true, runValidators: true },
     );
 
-    return updatedBook
+    updatedBook
       ? res.json(updatedBook)
       : res.status(404).json({ message: "Book not found" });
+    return;
   } catch (error) {
     res.status(500).json({ message: "Cannot update the book by ID", error });
+    return;
   }
 });
 
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", async (req: Request, res: Response): Promise<void> => {
   try {
     const deletedBook = await Book.findByIdAndDelete(req.params.id);
 
-    return deletedBook
+    deletedBook
       ? res.json(deletedBook)
       : res.status(404).json({ message: "Book not found" });
+    return;
   } catch (error) {
     res.status(500).json({ message: "Cannot delete the book by ID", error });
+    return;
   }
 });
 
-module.exports = router;
+export { router as bookRoutes };
