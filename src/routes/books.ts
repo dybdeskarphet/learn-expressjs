@@ -1,9 +1,10 @@
 import express, { Request, Response } from "express";
 import { IBook, Book } from "../models/Book";
 import { connectDB } from "../db";
+import path from 'path'
 
 const router = express.Router();
-connectDB();
+connectDB(path.basename(__filename));
 
 // Books in JSON
 router.get("/", async (req: Request, res: Response) => {

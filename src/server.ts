@@ -1,5 +1,6 @@
 import express, { Express, Request, Response } from "express";
 import { bookRoutes } from "./routes/books";
+import { authRoutes } from "./routes/auth";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -11,9 +12,9 @@ app.use(express.json());
 
 // Books
 app.use("/books", bookRoutes);
+app.use("/auth", authRoutes);
 
-// root
-
+// Root
 app.get("/", (req: Request, res: Response) => {
   res.send("This is a Library API");
 });
