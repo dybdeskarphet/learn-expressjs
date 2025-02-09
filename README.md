@@ -1,4 +1,4 @@
-# Express.js
+# 🚄 Express.js
 
 A simple API built with **Express.js**, **Mongoose (MongoDB)**, and **JWT** authentication.
 
