@@ -1,6 +1,7 @@
 import express, { Express, Request, Response } from "express";
 import { bookRoutes } from "./routes/books";
 import { authRoutes } from "./routes/auth";
+import { privateRoutes } from "./routes/private";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -10,9 +11,10 @@ const app: Express = express();
 // Middleware
 app.use(express.json());
 
-// Books
+// Add routes
 app.use("/books", bookRoutes);
 app.use("/auth", authRoutes);
+app.use("/private", privateRoutes);
 
 // Root
 app.get("/", (req: Request, res: Response) => {
