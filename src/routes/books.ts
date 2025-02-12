@@ -1,7 +1,7 @@
 import express, { Request, Response } from "express";
 import { IBook, Book } from "../models/Book";
 import { connectDB } from "../db";
-import path from 'path'
+import path from "path";
 
 const router = express.Router();
 connectDB(path.basename(__filename));
@@ -10,7 +10,7 @@ connectDB(path.basename(__filename));
 router.get("/", async (req: Request, res: Response) => {
   const pageOptions = {
     page: parseInt(req.query.page as string, 10) || 1,
-    limit: parseInt(req.query.limit as string, 10) || 1,
+    limit: parseInt(req.query.limit as string, 10) || 5,
   };
 
   try {
