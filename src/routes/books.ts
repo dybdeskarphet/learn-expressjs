@@ -2,25 +2,35 @@ import express, { Request, Response } from "express";
 import { IBook, Book } from "../models/Book";
 import { connectDB } from "../db";
 import path from "path";
+import NodeCache from "node-cache";
 
 const router = express.Router();
 connectDB(path.basename(__filename));
+const bookCache = new NodeCache({ stdTTL: 100 });
 
 // Books in JSON
 router.get("/", async (req: Request, res: Response) => {
   const pageOptions = {
     page: parseInt(req.query.page as string, 10) || 1,
-    limit: parseInt(req.query.limit as string, 10) || 5,
+    limit: parseInt(req.query.limit as string, 10) || 10,
   };
 
-  try {
-    const books = await Book.find()
-      .skip(pageOptions.limit * (pageOptions.page - 1))
-      .limit(pageOptions.limit);
+  const cacheKey = `data-page-${pageOptions.page}`;
+  const cachedData = bookCache.get(cacheKey);
 
-    res.json(books);
-  } catch (error) {
-    res.status(500).json({ message: "Error getting the book list", error });
+  if (cachedData) {
+    res.json({ cached: true, data: cachedData });
+  } else {
+    try {
+      const books = await Book.find()
+        .skip(pageOptions.limit * (pageOptions.page - 1))
+        .limit(pageOptions.limit);
+
+      bookCache.set(cacheKey, books);
+      res.json(books);
+    } catch (error) {
+      res.status(500).json({ message: "Error getting the book list", error });
+    }
   }
 });
 
