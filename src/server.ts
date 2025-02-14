@@ -3,12 +3,22 @@ import { bookRoutes } from "./routes/books";
 import { authRoutes } from "./routes/auth";
 import { privateRoutes } from "./routes/private";
 import dotenv from "dotenv";
+import { rateLimit } from "express-rate-limit";
 
 dotenv.config();
 
 const app: Express = express();
 
+// Rate limiter
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  limit: 5,
+  standardHeaders: "draft-8",
+  legacyHeaders: false,
+});
+
 // Middleware
+app.use(limiter);
 app.use(express.json());
 
 // Add routes
